@@ -1,0 +1,137 @@
+{% extends 'content.html.twig' %}
+
+{% block pageContent %}
+    
+    <div class="content-wrapper" style="min-height: 847px;">
+        <div class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1 class="m-0">{{ page_title }}</h1>
+                    </div>
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item "><a href="{{ path('client_index')}}">Client</a></li>
+                            <li class="breadcrumb-item "><a href="{{ path('client_details', { id : clientAccount.client.idencoded})}}">Client Details</a></li>
+                            <li class="breadcrumb-item active">{{ page_title }}</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <section class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="card card-primary">
+                            <div class="card-body" id='accountDetail'></div>
+                        </div>
+                    </div>
+                    <div class="col-md-9">
+                        <div class="card">
+                            <div class="card-header p-2">
+                                <ul class="nav nav-pills">
+                                    <li class="nav-item"><a class="nav-link active" href="#billings" data-toggle="tab">Billing</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="#payments" data-toggle="tab">Payment</a></li>
+                                </ul>
+                            </div>
+                        <div class="card-body">
+                            <div class="tab-content">
+                                <div class="tab-pane active" id="billings">
+                                    <div class="col-12">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                {% include 'flash_message.html.twig' %}
+                                                {% if userData.type == 'Super Admin' or 'Client Details Account Details Billing' in userData.accesses %}
+                                                    <div  class="dataTables_wrapper dt-bootstrap4">
+                                                        <div class="row">
+                                                            <div class="col-sm-12">
+                                                                <div class='text-right'>
+                                                                    {% if userData.type == 'Super Admin' or  'Client Details Account Details Billing New' in userData.accesses %}
+                                                                        <a href='javascript:void(0);' class='href-modal' data-id='0' data-action='n' data-type="billing">New Account Billing</a>
+                                                                    {% endif %} 
+                                                                </div>
+                                                                <table id="clientAccountBilling-datalist" class="table dataTable" width="100%">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th>Billing Date</th>                                                                            
+                                                                            <th>Status</th>
+                                                                            <th>Billed Amount</th>                                                                            
+                                                                            <th>Due Date</th>
+                                                                            <th>Action</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody></tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div> 
+                                                    </div>
+                                                {% else %}
+                                                    You don't have an access to view this data.
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane" id="payments">
+                                    <div class="col-12">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                {% include 'flash_message.html.twig' %}
+                                                {% if userData.type == 'Super Admin' or 'Client Details Account Details Payment' in userData.accesses %}
+                                                    <div  class="dataTables_wrapper dt-bootstrap4">
+                                                        <div class="row">
+                                                            <div class="col-sm-12">
+                                                                <div class='text-right'>
+                                                                    {% if userData.type == 'Super Admin' or  'Client Details Account Details Payment New' in userData.accesses %}
+                                                                        <a href='javascript:void(0);' class='href-modal' data-id='0' data-action='n' data-type="payment">New Payment</a>
+                                                                    {% endif %} 
+                                                                </div>
+                                                                <table id="clientAccountPayment-datalist" class="table dataTable" width="100%">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th>Transaction #</th>
+                                                                            <th>Amount</th>
+                                                                            <th>Payment Type</th>
+                                                                            <th>File</th>
+                                                                            <th>Reference No.</th>
+                                                                            <th>Payment Date</th>
+                                                                            <th>Action</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody></tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div> 
+                                                    </div>
+                                                {% else %}
+                                                    You don't have an access to view this data.
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    {% include 'js.html.twig' %}
+
+    <script language="javascript">
+        //<![CDATA[
+        $(document).ready(function(){
+            client_account_details.settings.clientAccountId =  '{{ clientAccount.idencoded }}';
+            client_account_details.settings.ajaxClientAccountDetailUrl = "{{ path('client_account_ajax_details')}}";
+            client_account_details.settings.ajaxClientAccountBillingUrl = "{{ path('client_account_billing_ajax_list')}}";
+            client_account_details.settings.ajaxClientAccountBillingFormUrl  =  "{{ path('client_account_billing_ajax_form')}}";
+            client_account_details.settings.ajaxClientAccountPaymentFormUrl  =  "{{ path('client_account_payment_ajax_form')}}";
+            client_account_details.settings.ajaxClientAccountPaymentUrl = "{{ path('client_account_payment_ajax_list')}}";
+            client_account_details.init();
+        });
+        //]]>
+    </script>
+{% endblock %}

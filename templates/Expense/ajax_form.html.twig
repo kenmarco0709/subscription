@@ -1,0 +1,90 @@
+{% set userData = app.session.get('userData') %} 
+
+<div class="modal-header">
+    <h5 class="modal-title" id="exampleModalLabel">{{ page_title }}</h5>
+</div>
+<div class="modal-body">
+    <div class="card card-primary">
+         <div class="alert alert-danger errors d-none" role="alert" >
+       
+        </div>
+        <div class="alert alert-success success d-none" role="alert" >
+       
+        </div>
+        <div class="card-body">
+            <form id="expenseForm">
+                  <div class="form-group">
+                    {{ form_label(form.expense_type_desc) }}
+                    {{ form_widget(form.expense_type_desc) }}
+                    {{ form_widget(form.expenseType) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.description) }}
+                    {{ form_widget(form.description) }}
+                </div>
+                <div class="form-group">
+                     {{ form_label(form.amount) }}
+                    {{ form_widget(form.amount) }}
+                </div>
+                <div class="form-group">
+                     {{ form_label(form.expenseDate) }}
+                    {{ form_widget(form.expenseDate) }}
+                </div>
+                <div class="card-footer text-right">
+                    <button type="button" class="btn btn-secondary close-modal" data-bs-dismiss="modal">Close</button>
+                    {% if action == 'u' and (userData.type == 'Super Admin' or 'Expense Delete' in userData.accesses) %}
+                        <button type="submit" class="ask-continue btn  btn-danger" name="action" value="d"
+                                data-message="Are you sure you want to delete this record?">Delete</button>
+                    {% endif %}
+                   <button type="submit" class="btn just-continue btn-primary" name="action" value="{{ action }}" data-message="Are you sure you want to save this information?">Submit</button>
+                </div>
+
+                {{ form_widget(form.branch) }}
+                {{ form_widget(form.action) }}
+                {{ form_widget(form.id) }}
+                {{ form_widget(form._token) }}
+
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    
+    var expenseFormActionUrl = "{{ path('expense_ajax_form_process')}}";
+    var paymentTypeAutocompleteUrl = "{{ path('expense_type_autocomplete')}}";
+
+
+    global.init();
+    global.autocomplete.bind(paymentTypeAutocompleteUrl,'#expense_form_expense_type_desc','#expense_form_expenseType');
+
+    $('.close-modal').unbind('click').bind('click',function(){
+        $('.modal').modal('hide');
+    });
+
+    $('#expenseForm').submit(function(e){
+
+        e.preventDefault();
+        _this = $(this);
+        _this.find(':input[type=submit]').prop('disabled', true);
+        var formData = $(this).serialize();
+        $.ajax({
+            url: expenseFormActionUrl,
+            data: formData, 
+            type: "post",
+            dataType: "JSON",
+            success: function(r){
+                if(r.success){
+
+                    $.toaster({ message : r.msg, title : '', priority : 'success' });
+                    $('.modal').modal('hide');
+                    expense.dataList.draw();
+
+                } else {
+                    $.toaster({ message : r.msg, title : '', priority : 'danger' });
+                }
+            }
+        });
+    });
+</script>

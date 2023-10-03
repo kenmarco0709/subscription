@@ -1,0 +1,9 @@
+twig:
+    default_path: '%kernel.project_dir%/templates'
+    globals:
+        assets_version: '%env(ASSETS_VERSION)%'
+        global_url: '%app.global_url%'
+
+when@test:
+    twig:
+        strict_variables: true

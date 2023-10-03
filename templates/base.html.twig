@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title> Subscription System</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&amp;display=fallback">
+    <link rel="stylesheet" href="/plugins/fontawesome-free/css/all.min.css">
+    <link rel="stylesheet" href="/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+    <link rel="stylesheet" href="/dist/css/adminlte.min.css?v={{ assets_version }}">
+    <link rel="stylesheet" href="/css/datatable/datatabLe.css?v={{ assets_version }}">
+    <link rel="stylesheet" href="/css/jquery-themes/jquery-themes.css">
+    <link rel="stylesheet" href="/plugins/daterangepicker/daterangepicker.css?v={{ assets_version }}">
+    <link rel="stylesheet" href="/plugins/timepicker/timepicker.css?v={{ assets_version }}">
+    <link rel="stylesheet" href="/plugins/dropzone/dropzone.css?v={{ assets_version }}">
+    <link rel="stylesheet" href="/plugins/fullcalendar/main.css">
+    <link rel="stylesheet" href="/css/styles.css?v={{ assets_version }}">
+
+    {% if  stylesheets is defined %}
+        {% for stylesheet in stylesheets %}
+            <link rel="stylesheet" href="{{stylesheet}}?v={{ assets_version }}">
+        {% endfor  %}
+    {% endif %}
+
+
+
+</head>
+<body class="{{ app.request.attributes.get('_route') == 'auth_login' ? 'login-page' : 'sidebar-mini layout-fixed' }}" style={{ app.request.attributes.get('_route') == 'auth_login' ? 'min-height: 496.781px;' : 'height: auto;' }}>
+
+    {% set userData = app.session.get('userData') %} 
+    {% block content %}{% endblock %}
+
+</body>
+</html>

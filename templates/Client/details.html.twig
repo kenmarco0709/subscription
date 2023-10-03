@@ -1,0 +1,99 @@
+{% extends 'content.html.twig' %}
+
+{% block pageContent %}
+    
+    <div class="content-wrapper" style="min-height: 847px;">
+        <div class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1 class="m-0">{{ page_title }}</h1>
+                    </div>
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item "><a href="{{ path('client_index')}}">Client</a></li>
+                            <li class="breadcrumb-item active">{{ page_title }}</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <section class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="card card-primary">
+                            <div class="card-body">
+                                <div><strong>Name: </strong> {{ client.fullname}}</div>
+                                <div><strong>Contact No.: </strong> {{ client.contactno}}</div>
+                                <div><strong>Email: </strong> {{ client.email}}</div>
+                                <div><strong>Address: </strong> {{ client.address}}</div>
+                                <hr>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-9">
+                        <div class="card">
+                            <div class="card-header p-2">
+                                <ul class="nav nav-pills">
+                                    <li class="nav-item"><a class="nav-link active" href="#accounts" data-toggle="tab">Account</a></li>
+                                </ul>
+                            </div>
+                        <div class="card-body">
+                            <div class="tab-content">
+                                <div class="tab-pane active" id="accounts">
+                                    <div class="col-12">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                {% include 'flash_message.html.twig' %}
+                                                {% if userData.type == 'Super Admin' or 'Client Details Account' in userData.accesses %}
+                                                    <div  class="dataTables_wrapper dt-bootstrap4">
+                                                        <div class="row">
+                                                            <div class="col-sm-12">
+                                                                <div class='text-right'>
+                                                                    {% if userData.type == 'Super Admin' or  'Client Details Account New' in userData.accesses %}
+                                                                        <a href='javascript:void(0);' class='href-modal' data-id='0' data-action='n'>New Account</a>
+                                                                    {% endif %} 
+                                                                </div>
+                                                                <table id="clientAccount-datalist" class="table dataTable">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th>Account Name</th>
+                                                                            <th>Status</th>
+                                                                            <th>Action</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody></tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div> 
+                                                    </div>
+                                                {% else %}
+                                                    You don't have an access to view this data.
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    {% include 'js.html.twig' %}
+
+    <script language="javascript">
+        //<![CDATA[
+        $(document).ready(function(){
+            client_details.settings.clientId =  '{{ client.idencoded }}';
+            client_details.settings.ajaxClientAccountFormUrl = '{{ path('client_account_ajax_form') }}';
+            client_details.settings.clientAccountAjaxUrl = '{{ path('client_account_ajax_list')}}';
+            client_details.init();
+        });
+        //]]>
+    </script>
+{% endblock %}

@@ -1,0 +1,7 @@
+<li>
+    <label>
+        <input type="checkbox" name="accesses[{{ ctr }}][isChecked]" value="1" {{ access.description in userAccessDescriptions ? 'checked' : '' }} />
+        <input type="hidden" name="accesses[{{ ctr }}][description]" value="{{ access.description }}" />
+        {{ access.label }}
+    </label>
+</li>

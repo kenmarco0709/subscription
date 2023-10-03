@@ -1,0 +1,194 @@
+.error{
+    color: red;
+}
+
+.success{
+    color: green;
+}
+
+.form-control {
+  display: block;
+  width: 100%;
+  height: calc(2.25rem + 2px);
+  padding: .375rem .75rem;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #495057;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid #ced4da;
+  border-radius: .25rem;
+  box-shadow: inset 0 0 0 transparent;
+  transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+
+.form-group {
+  margin-bottom: .1rem;
+}
+
+#accessForm ul {
+    list-style:none;
+    list-style: none;
+    margin-left: 0px!important;
+    padding-left: 20px;
+}
+
+.loader {
+    border: 16px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 16px solid #3498db;
+    width: 120px;
+    height: 120px;
+    -webkit-animation: spin 2s linear infinite; /* Safari */
+    animation: spin 2s linear infinite;
+    margin: 0 auto;
+  }
+
+  
+  /* Safari */
+  @-webkit-keyframes spin {
+    0% { -webkit-transform: rotate(0deg); }
+    100% { -webkit-transform: rotate(360deg); }
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+/* loader ... */
+  .lds-ellipsis {
+    display: inline-block;
+    position: relative;
+    width: 80px;
+    height: 1;
+  }
+  .lds-ellipsis div {
+    position: absolute;
+    width: 13px;
+    bottom:1px;
+    height: 13px;
+    border-radius: 50%;
+    background: #fff;
+    animation-timing-function: cubic-bezier(0, 1, 1, 0);
+  }
+  .lds-ellipsis div:nth-child(1) {
+    left: 8px;
+    animation: lds-ellipsis1 0.6s infinite;
+  }
+  .lds-ellipsis div:nth-child(2) {
+    left: 8px;
+    animation: lds-ellipsis2 0.6s infinite;
+  }
+  .lds-ellipsis div:nth-child(3) {
+    left: 32px;
+    animation: lds-ellipsis2 0.6s infinite;
+  }
+  .lds-ellipsis div:nth-child(4) {
+    left: 56px;
+    animation: lds-ellipsis3 0.6s infinite;
+  }
+  @keyframes lds-ellipsis1 {
+    0% {
+      transform: scale(0);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+  @keyframes lds-ellipsis3 {
+    0% {
+      transform: scale(1);
+    }
+    100% {
+      transform: scale(0);
+    }
+  }
+  @keyframes lds-ellipsis2 {
+    0% {
+      transform: translate(0, 0);
+    }
+    100% {
+      transform: translate(24px, 0);
+    }
+  }
+
+  .table-btn{
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 0;
+    padding: 5px;
+    padding-right: 10px;
+    padding-left: 10px;
+  }
+
+
+.autocomplete-suggestions { -webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box; border: 1px solid #999; background: #FFF; cursor: default; overflow: auto; -webkit-box-shadow: 1px 4px 3px rgba(50, 50, 50, 0.64); -moz-box-shadow: 1px 4px 3px rgba(50, 50, 50, 0.64); box-shadow: 1px 4px 3px rgba(50, 50, 50, 0.64); }
+.autocomplete-suggestion { padding: 2px 5px; white-space: nowrap; overflow: hidden; }
+.autocomplete-no-suggestion { padding: 2px 5px;}
+.autocomplete-selected { background: #F0F0F0; }
+.autocomplete-suggestions strong { font-weight: bold; color: #000; }
+.autocomplete-group { padding: 2px 5px; font-weight: bold; font-size: 16px; color: #000; display: block; border-bottom: 1px solid #000; }
+
+.btn-group input[type=checkbox], input[type=radio]{
+    box-sizing: border-box;
+    padding: 0;
+    visibility: hidden;
+}
+
+.btn-group .btn:not(:disabled):not(.disabled).active, .btn:not(:disabled):not(.disabled):active {
+  box-shadow: none;
+  background-color: red;
+  color: #fff;
+}
+
+.modal-fullscreen .modal-dialog {
+    max-width: 100%;
+    margin: 0;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 100000;
+}
+table thead tr{
+  font-weight: bold;
+  border:none;
+}
+table tfoot  tr td{
+  font-weight: bold;
+  border-top:none!important;
+}
+
+
+#dashboard .bg-info,
+#dashboard .card-header{
+  background-color:  #4f98c3!important;
+}
+
+#dashboard .fa-money-bill-wave:before {
+  content: "\f53a";
+  color: #fff;
+}
+
+#dashboard .fa-user:before {
+  content: "\f007";
+  color: #fff;
+}
+
+.sidebar-dark-primary{
+  background: #0069d9!important;
+}
+
+.info a,
+.nav-sidebar p{
+  color: #fff!important;
+}
+
+.brand-link,
+.user-panel{
+  border-bottom: 1px solid #fff!important;
+}
+
+
+

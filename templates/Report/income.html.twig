@@ -1,0 +1,65 @@
+{% extends 'content.html.twig' %}
+
+{% block pageContent %}
+    
+    <div class="content-wrapper" style="min-height: 847px;">
+        <div class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1 class="m-0">{{ page_title }}</h1>
+                    </div>
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item active">{{ page_title }}</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <section class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div  class="dataTables_wrapper dt-bootstrap4">
+                                  <div class='row mb-5'>
+                                    
+                                        <div class='col-12'>
+                                            <form class="form-inline" id='searchFrom'>
+                                                <div class="form-group mx-sm-3 mb-2">
+                                                    <label>From </label>
+                                                    <input type="text" class="form-control datepicker" id="dateFrom" placeholder='Date' value='{{ "now"|date("m/d/Y") }}' required>
+                                                </div>
+                                                <div class="form-group mx-sm-3 mb-2">
+                                                    <label>To </label>
+
+                                                    <input type="text" class="form-control datepicker" id="dateTo" placeholder='Date' value='{{ "now"|date("m/d/Y") }}' required>
+                                                </div>
+                                                <div class="form-group mx-sm-3 mb-2">
+                                                    <a href='javascript:void(0);' class='btn btn-secondary' target='_blank' id='reportCsvBtn'>Download CSV</a>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    {% include 'js.html.twig' %}
+
+    <script language="javascript">
+        //<![CDATA[
+        $(document).ready(function(){
+            income.init();
+        });
+        //]]>
+    </script>
+{% endblock %}

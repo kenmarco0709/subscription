@@ -1,0 +1,93 @@
+{% extends 'content.html.twig' %}
+
+{% block pageContent %}
+    
+    <div class="content-wrapper" style="min-height: 847px;">
+        <div class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1 class="m-0">{{ page_title }}</h1>
+                    </div>
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item active">{{ page_title }}</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <section class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div  class="dataTables_wrapper dt-bootstrap4">
+                                    {# <div class='row mb-5'>
+                                    
+                                        <div class='col-12'><small>Note: Please provide billing date and due date to start billing.</small></div>
+                                        <div class='col-12'>
+                                            <form class="form-inline">
+                                                <div class="form-group mb-2">
+                                                    <input type="text" class="form-control datepicker" id="billingDate" placeholder="Billing Date">
+                                                </div>
+                                                <div class="form-group mx-sm-3 mb-2">
+                                                    <input type="text" class="form-control datepicker" id="dueDate" placeholder='Due Date'>
+                                                </div>
+                                                <button type="submit" class="btn btn-primary mb-2">Start Billing</button>
+                                            </form>
+                                        </div>
+                                    </div> #}
+                                    <div class="row">
+                                        <div class='col-3'>
+                                            <select class='form-control' id="purok">
+                                                <option value='All'>All</option>
+                                                {% for purok in puroks %}
+                                                    <option value="{{ purok.idencoded}}">{{purok.description}}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        <div class='col-4'>
+                                            {% if userData.type == 'Super Admin' or 'Dashboard Billing Print MasterList' in userData.accesses %}
+                                                <div ><a href="javascript:void(0);" class='btn btn-secondary' target='_blank' id='printMasterList'>Print MasterList</a></div>
+                                            {% endif %}
+                                        </div>
+                                        <div class="col-sm-12">
+                                  
+                                            <table id="accountBilling-datalist" class="table dataTable" width='100%'>
+                                                <thead>
+                                                    <tr>
+                                                        <th>Client</th>
+                                                        <th>Purok</th>
+                                                        <th>Account Serial #</th>
+                                                        <th>Month</th>
+                                                        <th>Present Billing</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody></tbody>
+                                            </table>
+                                        </div>
+                                    </div> 
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    {% include 'js.html.twig' %}
+    <script language="javascript">
+        //<![CDATA[
+            $(document).ready(function(){
+                billing.settings.ajaxClientAccountBillingFormUrl  =  "{{ path('client_account_billing_ajax_form')}}";
+                billing.settings.ajaxClientAccountForBillingList  =  "{{ path('client_account_ajax_for_billing_list')}}"; 
+                billing.init();
+            });
+        //]]>
+    </script>
+{% endblock %}

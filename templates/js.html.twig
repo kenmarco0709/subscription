@@ -1,0 +1,61 @@
+<script src="/plugins/jquery/jquery.min.js"></script>
+<script src="/plugins/jquery/datepicker.js"></script>
+<script src="/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="/dist/js/adminlte.min.js?v=3.2.0"></script>
+<script src="/plugins/moment/moment.min.js"></script>
+<script src="/plugins/chart.js/Chart.min.js"></script>
+
+ <script src="https://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>  
+ <script src="/plugins/devbridge/devbridge.js"></script>
+<script src="/plugins/dropzone/dropzone.js"></script>
+<script src="/plugins/maskMoney.js"></script>
+<script src="/plugins/mask/mask.min.js"></script>
+<script src="/plugins/toaster.js"></script>
+<script src="/plugins/fullcalendar/main.js"></script>
+<script src="/plugins/timepicker/timepicker.js"></script>
+<script src="/plugins/qztray/qztray.js"></script>
+
+<script src="/js/global.js?v={{ assets_version }}"></script>
+
+<script type="text/javascript">
+    $(document).ready(function(){
+       global.settings.url = '{{ global_url }}';
+       global.init(); 
+        {# $('#modal').on('hide.bs.modal', function(){
+            $("#ui-datepicker-div").remove();
+
+        }); #}
+    });
+
+</script>
+
+{% set success_messages =  app.session.flashbag.get('success_messages') %}
+{% if success_messages %}
+    <script type="text/javascript">
+        var msg = ''; 
+        {% for success_message in  success_messages %}
+            msg+= "{{success_message}}" + "\n";
+        {% endfor %}
+        $.toaster({ message : msg, title : '', priority : 'success' });
+    </script>
+{% endif %}
+
+{% set error_messages =  app.session.flashbag.get('error_messages') %}
+{% if error_messages %}
+      <script type="text/javascript">
+        var msg = ''; 
+        {% for error_message in  error_messages %}
+                msg+= "{{error_message}}" + "\n";
+        {% endfor %}
+        $.toaster({ message : msg, title : '', priority : 'danger' });
+    </script>
+{% endif %}
+
+{% if  javascripts is defined %}
+    {% for script in javascripts %}
+        <script src="{{ script }}?v={{ assets_version }}"></script>
+    {% endfor  %}
+{% endif %}
+
+
+

@@ -1,0 +1,110 @@
+{% extends 'content.html.twig' %}
+
+{% block pageContent %}
+
+
+    <div class="content-wrapper" style="min-height: 847px;">
+        <div class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1 class="m-0">{{ page_title }}</h1>
+                    </div>
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                        
+                            <li class="breadcrumb-item "><a href="{{ path('company_index')}}">Company</a></li>
+                            <li class="breadcrumb-item "><a href="{{ path('company_details', { id: companyId })}}">Company Details</a></li>
+                            <li class="breadcrumb-item active">{{ page_title }}</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <section class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class='col-12'>
+                         {% include 'flash_message.html.twig' %}
+                        
+                        <form id="accessForm" method="POST" action="{{ path('company_access_form_process') }}">
+                            <input type="hidden" name="userType" value="{{ userType }}" />
+                            <input type="hidden" name="company" value="{{ companyId }}" />
+
+                            <div class="col-12">
+                                <div class="card-footer text-right">
+                                    <button type="submit" class="btn just-continue btn-primary" 
+                                        data-message="Are you sure you want to save this information?">Submit</button>
+                                         <a href="{{ path('company_details', { id: companyId })}}" class="button secondary btn btn-secondary">Back</a>
+                                </div>
+                            </div>
+                            <ul>
+                                {% set ctr = 0 %}
+                                {% for access in accesses %}
+                                    {% include 'Company/access_form_row.html.twig' with {access: access} %}
+                                    {% set ctr = ctr + 1 %}
+
+                                      {% if access.children is defined and access.children is iterable %}
+                                        <li>
+                                            <ul>
+                                                {% for accessChildren1 in access.children %}
+                                                    {% include 'Company/access_form_row.html.twig' with {access: accessChildren1} %}
+                                                    {% set ctr = ctr + 1 %}
+
+                                                    {% if accessChildren1.children is defined and accessChildren1.children is iterable %}
+                                                        <li>
+                                                            <ul>
+                                                                {% for accessChildren2 in accessChildren1.children %}
+                                                                    {% include 'Company/access_form_row.html.twig' with {access: accessChildren2} %}
+                                                                    {% set ctr = ctr + 1 %}
+                                                                     {% if accessChildren2.children is defined and accessChildren2.children is iterable %}
+                                                                        <li>
+                                                                            <ul>
+                                                                                {% for accessChildren3 in accessChildren2.children %}
+                                                                                    {% include 'Company/access_form_row.html.twig' with {access: accessChildren3} %}
+                                                                                    {% set ctr = ctr + 1 %}
+                                                                                    {% if accessChildren3.children is defined and accessChildren3.children is iterable %}
+                                                                                        <li>
+                                                                                            <ul>
+                                                                                                {% for accessChildren4 in accessChildren3.children %}
+                                                                                                    {% include 'Company/access_form_row.html.twig' with {access: accessChildren4} %}
+                                                                                                    {% set ctr = ctr + 1 %}
+                                                                                                    {% if accessChildren4.children is defined and accessChildren4.children is iterable %}
+                                                                                                        <li>
+                                                                                                            <ul>
+                                                                                                                {% for accessChildren5 in accessChildren4.children %}
+                                                                                                                    {% include 'Company/access_form_row.html.twig' with {access: accessChildren5} %}
+                                                                                                                    {% set ctr = ctr + 1 %}
+                                                                                                                {% endfor %}
+                                                                                                            </ul>
+                                                                                                        </li>
+                                                                                                    {% endif %}
+                                                                                                {% endfor %}
+                                                                                            </ul>
+                                                                                        </li>
+                                                                                    {% endif %} 
+                                                                                {% endfor %}
+                                                                            </ul>
+                                                                        </li>
+                                                                    {% endif %} 
+                                                                {% endfor %}
+                                                            </ul>
+                                                        </li>
+                                                    {% endif %}  
+                                                {% endfor %}
+                                            </ul>
+                                       </li>
+                                    {% endif %}     
+                                {% endfor %}
+                           </ul>         
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    {% include 'js.html.twig' %}
+
+    
+{% endblock %}

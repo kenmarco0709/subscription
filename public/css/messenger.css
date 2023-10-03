@@ -1,0 +1,25 @@
+.chat-list{
+    height: 80vh;
+    padding: 10px;
+}
+
+.chat-message .card-body{
+    height: 65vh;
+}
+
+#friend-list {
+    list-style: none;
+}
+.unseen{
+    color: #007bff;
+    font-weight: bold;
+}
+
+.seen{
+    color: #000;
+    font-weight: normal;
+}
+
+.seen a{
+    color: #000;
+}

@@ -1,0 +1,9 @@
+<div><strong>Name: </strong> {{ clientAccount.client.fullname}}</div>
+<div><strong>Account Name.: </strong> {{ clientAccount.description}}</div>
+<div><strong>Plan: </strong> {{ clientAccount.connectiontype}}</div>
+<div><strong>Old balance before the system: </strong>  {{ clientAccount.oldbalance}}</div>
+<div><strong>Balance From Previous Bill: </strong>  {{ clientAccount.remainingbalance}}</div>
+<div><strong>Current Bill: </strong> {{ lastBilling ? (lastBilling.status == 'Paid' ? '0.00' : lastBilling.billedamount) : '0.00'   }} </div>
+<div><strong>Remaining Balance: </strong> {{ clientAccount.finalbalance }} </div>
+<div><strong>Status: </strong> {{ clientAccount.status}}</div>
+<hr>

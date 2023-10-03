@@ -1,0 +1,65 @@
+{% extends 'content.html.twig' %}
+
+{% block pageContent %}
+    
+    <div class="content-wrapper" style="min-height: 847px;">
+        <div class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1 class="m-0">Manage {{ page_title }}</h1>
+                    </div>
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item active">{{ page_title }}</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <section class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                {% include 'flash_message.html.twig' %}
+                                <div  class="dataTables_wrapper dt-bootstrap4">
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            {% if userData.type == 'Super Admin' or 'CMS Payment Type New' in userData.accesses %}
+                                                <div class="text-right"><a href="{{ path('payment_type_form', {action : 'n' , id : '0' })}}">New Payment Type</a></div>
+                                            {% endif %}
+                                            <table id="paymentType-datalist" class="table dataTable">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Code</th>
+                                                        <th>Description</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody></tbody>
+                                            </table>
+                                        </div>
+                                    </div> 
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    {% include 'js.html.twig' %}
+
+    <script language="javascript">
+        //<![CDATA[
+        $(document).ready(function(){
+            payment_type.settings.ajaxUrl = '{{ path('payment_type_ajax_list') }}';
+            payment_type.init();
+        });
+        //]]>
+    </script>
+{% endblock %}

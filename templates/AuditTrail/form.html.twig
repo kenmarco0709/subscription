@@ -1,0 +1,692 @@
+{% extends 'content.html.twig' %}
+
+{% block pageContent %}
+    
+    <div class="content-wrapper" style="min-height: 847px;">
+        <div class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-12">
+                        <h1 class="m-0">{{ page_title }}</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <section class="content">
+            <form method="POST" action="{{ path('admission_form' , { action :action , id: id})}}" enctype='multipart/form-data'>
+                {% include 'flash_message.html.twig' %}
+                <div class="container-fluid">
+                    {% if action == 'n' %}
+                        <div class='row'>
+                            <div class='col-5'>
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class='form-group row'>
+                                            {{ form_label(form.admission_type_desc)}}
+                                            <div class='col-9'>
+                                                {{ form_widget(form.admission_type_desc)}}
+                                                {{ form_widget(form.admission_type)}}
+                                            </div>
+                                        </div>
+                                        {% if userData.type == 'Super Admin' or 'Admission Client New' in userData.accesses %}
+                                            <div class='text-right'><a href='javascript:void(0);' class='href-modal' data-type='client-form'>New Client</a></div>
+                                        {% endif %}
+                                        <div class='form-group row'>
+                                                 {{ form_label(form.client_desc)}}
+                                            <div class='col-9'>
+                                                {{ form_widget(form.client_desc)}}
+                                                {{ form_widget(form.client)}}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class='col-7'>
+                                <div class="card" style="min-height:300px;">
+                                    <div class="card-body">
+                                        {% if userData.type == 'Super Admin' or  'Admission Pet New' in userData.accesses %}
+                                            <div class='text-right'><a href='javascript:void(0);' class='href-modal' data-type='pet-form'>New Pet</a></div>
+                                        {% endif %}
+                                        <h5>Please choose atleast 1 pet.</h5>
+                                        <div class='client-pet-container'></div>
+                                        
+                                    </div>
+                                </div>
+                                    
+                                <div class="card-footer text-right">
+                                    <button type="submit" class="btn just-continue btn-primary" name="action" value="{{ action }}"
+                                        data-message="Are you sure you want to save this information?">Submit</button>
+                                    {% if action == 'u' and (userData.type == 'Super Admin' or 'Admission Delete' in userData.accesses) %}
+                                        <button type="submit" class="ask-continue btn  btn-danger" name="action" value="d"
+                                                data-message="Are you sure you want to delete this record?">Delete</button>
+                                    {% endif %}
+                                    <a href="{{ path('admission_index') }}" class="button secondary btn btn-secondary">Back</a>
+                                </div>
+
+                                {{ form_widget(form.branch) }}
+                                {{ form_widget(form.action) }}
+                                {{ form_widget(form.id) }}
+                                {{ form_widget(form._token) }}
+                            </div>
+                        </div>
+                    {% else %}
+                     
+                        <div class="invoice p-3 mb-3">
+
+                            <div class="row">
+                                <div class="col-12">
+                                    <h4>
+                                        <small class="float-right">Date: {{ admission.createdat|date('m/d/Y')}}</small>
+                                    </h4>
+                                </div>
+                            </div>
+
+                            <div class="row invoice-info mb-3">
+                                <div class="col-sm-3 invoice-col">
+                                    <h6><strong>Client</strong></h6>
+                                    <div class="row">
+                                        <div class="col-12">Name: <strong>{{ admission.client.fullname }}</strong></div>
+
+                                    </div>
+                                </div>
+                                <div class="col-sm-3 invoice-col">
+                                    <h6>&nbsp;</h6>
+                                    <div class="row">
+                                        <div class="col-12">Status: <strong>{{ admission.status }}</strong></div>
+
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 invoice-col">
+                                    <h6><strong>Attending Vet</strong></h6>
+                                    <div class="row">
+                                        <div class="col-7">
+                                            {{ form_widget(form.attending_vet_desc)}}
+                                            {{ form_widget(form.attending_vet)}}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row invoice-info mb-3">
+                                <div class="col-sm-12 invoice-col">
+                                    <h6><strong>Pets</strong></h6>
+                                    
+                                </div>
+                            </div>
+
+                            {% for k, admissionPet in admission.admissionpets %}
+                            
+                                <div class="row invoice-info mb-3">
+                                    <div class="col-sm-12 invoice-col">
+                                        <div class="row">
+                                            <div class="col-2">
+                                                <strong>Name : </strong> {{ admissionPet.pet.name}} </br>
+                                                <strong>Breed: </strong> {{ admissionPet.pet.breed.description}} </br>
+                                                <strong>Age  : </strong> {{ admissionPet.pet.breed.description}} </br>
+                                                <small><a href='javascript:void(0);' class='href-modal' data-type='pet-medical-history' data-id='{{ admissionPet.pet.id }}'>Admission History</a></small></br>
+                                                {% if admission.admissiontype.description == 'Confinement' %}
+                                                    <small><a href='javascript:void(0);' class='href-modal' data-type='pet-admission-history' data-id='{{ admissionPet.id }}'>Confinement History</a></small>
+                                                {% endif %}
+                                                <input type="hidden" value="{{ admissionPet.id }}"  name="admission[medical_record][{{k}}][id]"/>
+                                            </div>
+                                            <div class="col-6">
+                                                <h5> <strong>Medical Record</strong></h5>
+                                                <div class="card">
+                                                    <div class="card-body">
+                                                        <div class='container'>
+                                                            <div class='row'>
+                                                                {% if admission.admissiontype.description == 'Vaccination' %}
+                                                                    {% if admissionPet.medicalrecords|length > 0 %}
+
+                                                                        {% for  medicalRecord in admissionPet.medicalrecords %}
+                                                                            {% if medicalRecord.medicalrecordhistory == null  %}
+                                                                                <div class='col-6'>
+                                                                                    <div class='form-group row'>
+                                                                                    <label>Vaccine Due Date</label>
+                                                                                        <div class='col-12'>
+                                                                                            <input type="text" class="form-control datepicker" value="{{ medicalRecord.vaccineduedate and medicalRecord.vaccineduedate != '' ? medicalRecord.vaccineduedate|date('m/d/Y') : ''}}"  name="admission[medical_record][{{k}}][vaccine_due_date]" />
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class='col-12'>
+                                                                                    <h6><strong>Clinical Exam</strong></h6>
+                                                                                    <div class='container'>
+                                                                                        <div class='row'>
+                                                                                            <div class='col-6'>
+                                                                                                <div class='form-group row'>
+                                                                                                    <label>Weight</label>
+                                                                                                    <div class='col-12'>
+                                                                                                        <input type="text" class="form-control" value="{{ medicalRecord.weight}}"  name="admission[medical_record][{{k}}][weight]" />
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                            <div class='col-6'>
+                                                                                                <div class='form-group row'>
+                                                                                                        <label>Temperature</label>
+                                                                                                    <div class='col-12'>
+                                                                                                        <input type="text" class="form-control" value="{{ medicalRecord.temperature}}"  name="admission[medical_record][{{k}}][temperature]" />
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class='col-6'>
+                                                                                    <div class='form-group row'>
+                                                                                    <label>Upload Vaccination Card</label>
+                                                                                        <div class='col-12'>
+                                                                                            <input type="file" class="form-control" value=""  name="admission[medical_record][{{k}}][vaccine_card]" accept="image/png, image/gif, image/jpeg" />
+                                                                                            <small><a href="{{ medicalRecord.fileWebPath }}" target="_blank">{{ medicalRecord.vaxcarddesc }}</a></small>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class='col-6'>
+                                                                                    <div class='form-group row'>
+                                                                                    <label>Next Schedule Date:</label>
+                                                                                        <div class='col-12'>
+                                                                                            <input type="text" class="form-control datepicker" value="{{ medicalRecord.returneddate and medicalRecord.returneddate != '' ? medicalRecord.returneddate|date('m/d/Y') : '' }}"  name="admission[medical_record][{{k}}][returned_date]"/>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class='col-12'>
+                                                                                    <div class='form-group row'>
+                                                                                    <label>Remarks:</label>
+                                                                                        <div class='col-12'>
+                                                                                            <textarea class="form-control"  name="admission[medical_record][{{k}}][remarks]">{{ medicalRecord.remarks}}</textarea> 
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class='col-12'>
+                                                                                    <div class='form-group row'>
+                                                                                        <label>Prescription</label>
+                                                                                        <div class='col-12'>
+                                                                                            <textarea class="form-control"   name="admission[medical_record][{{k}}][prescription]" >{{ medicalRecord.prescription}}</textarea> 
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            {% endif %}
+                                                                        {% endfor %}
+                                                                    {% else %}
+
+                                                                        <div class='col-6'>
+                                                                            <div class='form-group row'>
+                                                                            <label>Vaccine Due Date</label>
+                                                                                <div class='col-12'>
+                                                                                    <input type="text" class="form-control datepicker" value=""  name="admission[medical_record][{{k}}][vaccine_due_date]" />
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class='col-12'>
+                                                                            <h6><strong>Clinical Exam</strong></h6>
+                                                                            <div class='container'>
+                                                                                <div class='row'>
+                                                                                    <div class='col-6'>
+                                                                                        <div class='form-group row'>
+                                                                                            <label>Weight</label>
+                                                                                            <div class='col-12'>
+                                                                                                <input type="text" class="form-control" value=""  name="admission[medical_record][{{k}}][weight]" />
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class='col-6'>
+                                                                                        <div class='form-group row'>
+                                                                                                <label>Temperature</label>
+                                                                                            <div class='col-12'>
+                                                                                                <input type="text" class="form-control" value=""  name="admission[medical_record][{{k}}][temperature]" />
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class='col-6'>
+                                                                            <div class='form-group row'>
+                                                                            <label>Upload Vaccination Card</label>
+                                                                                <div class='col-12'>
+                                                                                    <input type="file" class="form-control" value=""  name="admission[medical_record][{{k}}][vaccine_card]" accept="image/png, image/gif, image/jpeg" />
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class='col-6'>
+                                                                            <div class='form-group row'>
+                                                                            <label>Next Schedule Date:</label>
+                                                                                <div class='col-12'>
+                                                                                    <input type="text" class="form-control datepicker" value=""  name="admission[medical_record][{{k}}][returned_date]"/>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class='col-12'>
+                                                                            <div class='form-group row'>
+                                                                            <label>Remarks:</label>
+                                                                                <div class='col-12'>
+                                                                                    <textarea class="form-control" value=""  name="admission[medical_record][{{k}}][remarks]"></textarea> 
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class='col-12'>
+                                                                            <div class='form-group row'>
+                                                                                <label>Prescription</label>
+                                                                                <div class='col-12'>
+                                                                                    <textarea class="form-control" value=""  name="admission[medical_record][{{k}}][prescription]" ></textarea> 
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>    
+                                                                    {% endif %}
+                                                                {% elseif admission.admissiontype.description in ['Consultation', 'Confinement'] %} 
+                                                                    {% if admissionPet.medicalRecords|length %}
+                                                                        {% for medicalRecord in admissionPet.medicalrecords %}
+                                                                            {% if medicalRecord.medicalrecordhistory == null %}
+                                                                                <div class='col-12'>
+                                                                                    <h6><strong>Clinical Exam</strong></h6>
+                                                                                    <div class='container'>
+                                                                                        <div class='row'>
+                                                                                            <div class='col-6'>
+                                                                                                <div class='form-group row'>
+                                                                                                    <label>Weight</label>
+                                                                                                    <div class='col-12'>
+                                                                                                        <input type="text" class="form-control" value="{{ medicalRecord.weight}}"  name="admission[medical_record][{{k}}][weight]" />
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                            <div class='col-6'>
+                                                                                                <div class='form-group row'>
+                                                                                                        <label>Temperature</label>
+                                                                                                    <div class='col-12'>
+                                                                                                        <input type="text" class="form-control" value="{{ medicalRecord.temperature}}"  name="admission[medical_record][{{k}}][temperature]" />
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                            <div class='col-6'>
+                                                                                                <div class='form-group row'>
+                                                                                                        <label>Primary Complain/ History</label>
+                                                                                                    <div class='col-12'>
+                                                                                                        <input type="text" class="form-control" value="{{ medicalRecord.primarycomplain}}"  name="admission[medical_record][{{k}}][primary_complain]" />
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class='col-12'>
+                                                                                    <h6><strong>Laboratory /Interpretation</strong></h6>
+                                                                                    <div class='container'>
+                                                                                        <div class='row'>
+                                                                                            <div class='col-6'>
+                                                                                                <div class='form-group row'>
+                                                                                                    <label>Laboratory</label>
+                                                                                                    <div class='col-12'>
+                                                                                                        <input type="file" class="form-control" value=""  name="admission[medical_record][{{k}}][laboratory][]" accept="image/png, image/gif, image/jpeg" multiple="multiple" />
+                                                                                                        <div> 
+                                                                                                            {% if medicalRecord.medicalrecordlaboratories|length > 0 %}
+                                                                                                                {% set labCtr = medicalRecord.medicalrecordlaboratories|length %}
+                                                                                                            
+                                                                                                                {% for k, laboratory in medicalRecord.medicalrecordlaboratories %}
+                                                                                                                    <small><a href="{{ laboratory.fileWebPath }}" target="_blank">{{ laboratory.filedesc }}</a></small>
+
+                                                                                                                    {% if (k + 1) != labCtr %}
+                                                                                                                    ,
+                                                                                                                    {% endif %}
+                                                                                                                {% endfor %}
+                                                                                                            {% endif %}
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                            <div class='col-6'>
+                                                                                                <div class='col-12'>
+                                                                                                    <div class='form-group row'>
+                                                                                                    <label>Interpretations:</label>
+                                                                                                        <div class='col-12'>
+                                                                                                            <textarea class="form-control"  name="admission[medical_record][{{k}}][interpretations]">{{ medicalRecord.medicalinterpretation}}</textarea> 
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                {% if admission.admissiontype.description == 'Confinement' %}
+                                                                                    <div class='col-6'>
+                                                                                        <div class='form-group row'>
+                                                                                        <label>Discharged  Date:</label>
+                                                                                            <div class='col-12'>
+                                                                                                <input type="text" class="form-control datepicker" value="{{ admission.dischargeddate and admission.dischargeddate != '' ? admission.dischargeddate|date('m/d/Y'): ''}}"  name="admission[medical_record][{{k}}][discharged_date]"/>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                {% endif %}
+                                                                                <div class='col-6'>
+                                                                                    <div class='form-group row'>
+                                                                                    <label>Next Schedule Date:</label>
+                                                                                        <div class='col-12'>
+                                                                                            <input type="text" class="form-control datepicker" value="{{ medicalRecord.returneddate and medicalRecord.returneddate != '' ? medicalRecord.returneddate|date('m/d/Y') : ''}} "  name="admission[medical_record][{{k}}][returned_date]"/>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class='col-12'>
+                                                                                    <div class='form-group row'>
+                                                                                        <label>Prescription</label>
+                                                                                        <div class='col-12'>
+                                                                                            <textarea class="form-control" value=""  name="admission[medical_record][{{k}}][prescription]" >{{ medicalRecord.prescription}}</textarea> 
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>  
+                                                                                <div class='col-12'>
+                                                                                    <div class='form-group row'>
+                                                                                    <label>Remarks:</label>
+                                                                                        <div class='col-12'>
+                                                                                            <textarea class="form-control"  name="admission[medical_record][{{k}}][remarks]">{{ medicalRecord.remarks}}</textarea> 
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class='col-12'>
+                                                                                    <div class='form-group row'>
+                                                                                        <label>Diagnosis</label>
+                                                                                        <div class='col-12'>
+                                                                                            <textarea class="form-control"   name="admission[medical_record][{{k}}][diagnosis]" >{{ medicalRecord.diagnosis}}</textarea> 
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            {% endif %}
+                                                                        {% endfor %}
+                                                                    {% else %}
+                                                                        <div class='col-12'>
+                                                                            <h6><strong>Clinical Exam</strong></h6>
+                                                                            <div class='container'>
+                                                                                    <div class='row'>
+                                                                                        <div class='col-6'>
+                                                                                            <div class='form-group row'>
+                                                                                                <label>Weight</label>
+                                                                                                <div class='col-12'>
+                                                                                                    <input type="text" class="form-control" value=""  name="admission[medical_record][{{k}}][weight]" />
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class='col-6'>
+                                                                                            <div class='form-group row'>
+                                                                                                    <label>Temperature</label>
+                                                                                                <div class='col-12'>
+                                                                                                    <input type="text" class="form-control" value=""  name="admission[medical_record][{{k}}][temperature]" />
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class='col-6'>
+                                                                                            <div class='form-group row'>
+                                                                                                    <label>Primary Complain/ History</label>
+                                                                                                <div class='col-12'>
+                                                                                                    <input type="text" class="form-control" value=""  name="admission[medical_record][{{k}}][primary_complain]" />
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class='col-12'>
+                                                                                <h6><strong>Laboratory /Interpretation</strong></h6>
+                                                                                <div class='container'>
+                                                                                    <div class='row'>
+                                                                                        <div class='col-6'>
+                                                                                            <div class='form-group row'>
+                                                                                                <label>Laboratory</label>
+                                                                                                <div class='col-12'>
+                                                                                                    <input type="file" class="form-control" value=""  name="admission[medical_record][{{k}}][laboratory][]" accept="image/png, image/gif, image/jpeg" multiple="multiple" />
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class='col-6'>
+                                                                                            <div class='col-12'>
+                                                                                                <div class='form-group row'>
+                                                                                                <label>Interpretations:</label>
+                                                                                                    <div class='col-12'>
+                                                                                                        <textarea class="form-control" value=""  name="admission[medical_record][{{k}}][interpretations]"></textarea> 
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+
+                                                                            {% if admission.admissiontype.description == 'Confinement' %}
+                                                                                <div class='col-6'>
+                                                                                    <div class='form-group row'>
+                                                                                    <label>Discharged  Date:</label>
+                                                                                        <div class='col-12'>
+                                                                                            <input type="text" class="form-control datepicker" value=""  name="admission[medical_record][{{k}}][discharged_date]"/>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            {% endif %}
+                                                                            <div class='col-6'>
+                                                                                <div class='form-group row'>
+                                                                                <label>Next Schedule Date:</label>
+                                                                                    <div class='col-12'>
+                                                                                        <input type="text" class="form-control datepicker" value=""  name="admission[medical_record][{{k}}][returned_date]"/>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class='col-12'>
+                                                                                <div class='form-group row'>
+                                                                                    <label>Prescription</label>
+                                                                                    <div class='col-12'>
+                                                                                        <textarea class="form-control" value=""  name="admission[medical_record][{{k}}][prescription]" ></textarea> 
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div> 
+                                                                            <div class='col-12'>
+                                                                                <div class='form-group row'>
+                                                                                <label>Remarks:</label>
+                                                                                    <div class='col-12'>
+                                                                                        <textarea class="form-control" value=""  name="admission[medical_record][{{k}}][remarks]"></textarea> 
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class='col-12'>
+                                                                                <div class='form-group row'>
+                                                                                    <label>Diagnosis</label>
+                                                                                    <div class='col-12'>
+                                                                                        <textarea class="form-control" value=""  name="admission[medical_record][{{k}}][diagnosis]" ></textarea> 
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                    {% endif %}  
+                                                                {% endif %}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class='col-4 columns'>
+                                                 <div class="card">
+                                                    <div class="card-body">
+                                                        <div class='container'>
+                                                            <div class='row'>
+                                                                {% if admission.admissiontype.description == 'Vaccination' %}
+                                                                    <div class='col-12'>
+                                                                        <div class='form-group row'>
+                                                                            <label>Services</label>
+                                                                            <div class='col-12'>
+                                                                                {% for k2, service in services %}
+                                                                                    {% if service.servicetype is defined and service.servicetype.description == 'Vaccination' %}
+                                                                                        {% if admissionPet.medicalrecords|length > 0 %}
+                                                                                            {% for  medicalRecord in admissionPet.medicalrecords %}
+                                                                                                {% if medicalRecord.medicalrecordhistory == null %}
+                                                                                                    <div class="icheck-primary">
+                                                                                                        <input type="checkbox" id="service_admission{{k}}_{{k2}}" name="admission[medical_record][{{k}}][service][{{k2}}]" value="{{ service.id }}" {{( medicalRecord is defined and medicalRecord.medicalRecordServiceIdsArray is defined and  service.id in medicalRecord.medicalRecordServiceIdsArray ? 'checked' : '')}} >
+                                                                                                        <label for="service_admission{{k}}_{{k2}}">{{ service.description}}</label>
+                                                                                                    </div> 
+                                                                                                {% endif %}
+                                                                                            {% endfor %}
+                                                                                        {% else %}
+                                                                                            <div class="icheck-primary">
+                                                                                                <input type="checkbox" id="service_admission{{k}}_{{k2}}" name="admission[medical_record][{{k}}][service][{{k2}}]" value="{{ service.id }}">
+                                                                                                <label for="service_admission{{k}}_{{k2}}">{{ service.description}}</label>
+                                                                                            </div>     
+                                                                                        {% endif %}
+                                                                                    {% endif %} 
+                                                                                {% endfor %}
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                {% elseif admission.admissiontype.description in ['Consultation', 'Confinement'] %}
+                                                                    <div class='col-12'>
+                                                                        <div class='form-group row'>
+                                                                            <label>Items</label>
+                                                                            <div class='col-12'>
+                                                                                <div class='text-right'>
+                                                                                    <input type="text" class='form-control item_desc' id="item_desc_{{k}}" />
+                                                                                    <input type="hidden" class='form-control item_id' id="item_id_{{k}}" /> 
+                                                                                    <a href="javascript:void(0);" class="href-add" data-key="{{k}}" data-target="itemTable_{{k}}" data-desc="item_desc_{{k}}" data-id="item_id_{{k}}">Add Item</a>
+                                                                                </div>
+                                                                            </div>
+                                                                             <div class='col-12'>
+                                                                                <table width="100%" id="itemTable_{{k}}">
+                                                                                    <thead>
+                                                                                        <tr>
+                                                                                            <td><strong>Item</strong></td>
+                                                                                            <td><strong>Quantity</strong></td>
+                                                                                            <td><strong>Remarks</strong></td>
+                                                                                        </tr>
+                                                                                    </thead>
+                                                                                     <tbody >
+                                                                                        {% for medicalRecord in admissionPet.medicalrecords %}
+                                                                                            {% if medicalRecord.medicalrecordhistory == null %}
+                                                                                                {% if medicalRecord is defined and medicalRecord.medicalrecordservices is defined %}
+                                                                                                    {% for k2, medicalRecordItem in medicalRecord.medicalrecorditems %}
+                                                                                                        <tr>
+                                                                                                            <td> {{medicalRecordItem.inventoryitem.item.description }}
+                                                                                                                <input type="hidden" class='items' name="admission[medical_record][{{k}}][inventory_item][{{k2}}][id]" value="{{medicalRecordItem.inventoryitem.id}}">
+                                                                                                            </td>
+                                                                                                            <td>
+                                                                                                                <input class="form-control amt" type="text" name="admission[medical_record][{{k}}][inventory_item][{{k2}}][quantity]" value="{{medicalRecordItem.quantity}}" required>
+                                                                                                            </td>
+                                                                                                            <td>
+                                                                                                                <input class="form-control" type="text" name="admission[medical_record][{{k}}][inventory_item][{{k2}}][remarks]" value="{{medicalRecordItem.remarks}}">
+                                                                                                            </td>
+                                                                                                        </tr>
+                                                                                                    {% endfor %}
+                                                                                                {% endif %}
+                                                                                            {% endif %}
+                                                                                         {% endfor %}
+                                                                                     </tbody>
+                                                                                   
+                                                                                </table>
+                                                                                
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>    
+                                                                     <div class='col-12'>
+                                                                        <div class='form-group row'>
+                                                                            <label>Treatments</label>
+                                                                            <div class='col-12'>
+                                                                                <div class='text-right'>
+                                                                                    <input type="text" class='form-control treatment_desc' id="treatment_desc_{{k}}" />
+                                                                                    <input type="hidden" class='form-control treatment_id' id="treatment_id_{{k}}" /> 
+                                                                                    <a href="javascript:void(0);" class="href-add-treatment" data-key="{{k}}" data-target="treatmentTable_{{k}}" data-desc="treatment_desc_{{k}}" data-id="treatment_id_{{k}}">Add Treatment</a>
+                                                                                </div>
+
+                                                                            </div>
+                                                                            <div class='col-12'>
+                                                                                <table width="100%" id="treatmentTable_{{k}}">
+                                                                                    <thead>
+                                                                                        <tr>
+                                                                                            <td><strong>Treatment</strong></td>
+                                                                                            <td><strong>Remarks</strong></td>
+                                                                                        </tr>
+                                                                                    </thead>
+                                                                                    <tbody>
+                                                                                         {% for medicalRecord in admissionPet.medicalrecords %}
+                                                                                            {% if medicalRecord.medicalrecordhistory == null %}
+                                                                                                {% if medicalRecord is defined and medicalRecord.medicalrecordservices is defined %}
+                                                                                                    {% for k2, service in medicalRecord.medicalrecordservices %}
+                                                                                                        <tr>
+                                                                                                            <td> {{service.service.description}}
+                                                                                                                <input type="hidden" class='services' name="admission[medical_record][{{k}}][service][{{k2}}][id]" value="{{service.service.id}}">
+                                                                                                            </td>
+                                                                                                            <td>
+                                                                                                                <input class="form-control" type="text" name="admission[medical_record][{{k}}][service][{{k2}}][remarks]" value="{{service.remarks}}">
+                                                                                                            </td>
+                                                                                                        </tr>
+                                                                                                    {% endfor %}
+                                                                                                {% endif %}
+                                                                                            {% endif %}
+                                                                                         {% endfor %}
+                                                                                       
+                                                                                     </tbody>
+                                                                                </table>
+                                                                                
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>   
+                                                                {% endif %}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                                
+                                {{ form_widget(form.branch) }}
+                                {{ form_widget(form.action) }}
+                                {{ form_widget(form.id) }}
+                                {{ form_widget(form._token) }}
+                               
+                               <div class="card-footer text-right">
+
+                                    
+                                    {% if admission.status == 'New' or (admission.admissiontype.description == 'Confinement' and admission.status in ['Billed With Pending Payment', 'Ongoing Confinement'])  %}    
+                                        <button type="submit" class="btn just-continue btn-default" name="action" value="pb"
+                                             data-message="Are you sure you want to save this information?">Proceed to Billing</button>
+                                    {% endif %}
+                                    {% if admission.admissiontype.description == 'Confinement' and admission.status not in ['Discharged With Pending Payment', 'Paid'] %}
+                                        <button type="submit" class="btn just-continue btn-warning" name="action" value="nm"
+                                             data-message="Are you sure you want to save this information?">New Medical Record</button>
+                                    {% endif %}
+                                    {% if admission.admissiontype.description == 'Consultation' and admission.status == 'New' %}
+                                        <button type="submit" class="btn just-continue btn-warning" name="action" value="c"
+                                             data-message="Are you sure you want to save this information?">Confined Pet</button>
+                                    {% endif %}
+                                   
+                                    {% if admission.status == 'New' or (admission.admissiontype.description == 'Confinement' and admission.status not in ['Discharged With Pending Payment', 'Paid']) %}
+                                        <button type="submit" class="btn just-continue btn-primary" name="action" value="{{ action }}"
+                                                data-message="Are you sure you want to save this information?">Submit</button>
+                                        {% if action == 'u' and (userData.type == 'Super Admin' or 'Admission Delete' in userData.accesses) %}
+                                            <button type="submit" class="ask-continue btn  btn-danger" name="action" value="d"
+                                                    data-message="Are you sure you want to delete this record?">Delete</button>
+                                        {% endif %}
+                                    {% endif %}
+                                    <a href="{{ path('admission_index') }}" class="button secondary btn btn-secondary">Back</a>
+                                </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </form>
+        </section>
+    </div>
+
+    {% include 'js.html.twig' %}
+
+   
+    <script language="javascript">
+        //<![CDATA[
+        $(document).ready(function(){
+            admission_form.settings.formAction = "{{ action }}";
+            admission_form.settings.serviceAutcompleteUrl = "{{ path('service_autocomplete') }}";
+            admission_form.settings.vetAutocompleteUrl = "{{ path('user_vet_autocomplete') }}";
+            admission_form.settings.clientAjaxAutocompleteUrl = "{{ path('client_autocomplete') }}";
+            admission_form.settings.admissionTypeAjaxAutocompleteUrl = "{{ path('admission_type_autocomplete') }}";
+            admission_form.settings.inventoryItemAutompleteUrl = "{{ path('inventory_item_autocomplete') }}";
+            admission_form.settings.clientAjaxForm = "{{ path('client_ajax_form') }}";
+            admission_form.settings.clientPetAjaxForm = "{{ path('pet_ajax_form')}}";    
+            admission_form.settings.clientPetListUrl = "{{ path('client_pet_list')}}";   
+            admission_form.settings.petMedicalHistory = "{{ path('pet_medical_history_ajax')}}";   
+            admission_form.settings.petAdmissionHistory = "{{ path('pet_admission_history')}}";   
+            admission_form.init();
+        });
+        //]]>
+    </script>
+
+{% endblock %}

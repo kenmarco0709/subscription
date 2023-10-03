@@ -1,0 +1,198 @@
+{% extends 'content.html.twig' %}
+
+{% block pageContent %}
+    
+    <div class="content-wrapper" style="min-height: 847px;">
+        <div class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1 class="m-0">{{ page_title }}</h1>
+                    </div>
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                        
+                            <li class="breadcrumb-item "><a href="{{ path('company_index')}}">Company</a></li>
+                            <li class="breadcrumb-item active">{{ page_title }}</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <section class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="card card-primary">
+                            <div class="card-body">
+                                <div><strong>Code: </strong> {{ company.code}}</div>
+                                <div><strong>Description: </strong> {{ company.description}}</div>
+                                <hr>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-9">
+                        <div class="card">
+                            <div class="card-header p-2">
+                                <ul class="nav nav-pills">
+                                    <li class="nav-item"><a class="nav-link active" href="#users" data-toggle="tab">Users</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="#user-access" data-toggle="tab">User Access</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="#branches" data-toggle="tab">Branches</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="#sms" data-toggle="tab">Sms</a></li>
+
+                                </ul>
+                            </div>
+                        <div class="card-body">
+                            <div class="tab-content">
+                                <div class="tab-pane active" id="users">
+                                    <div class="col-12">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                {% include 'flash_message.html.twig' %}
+                                                {% if userData.type == 'Super Admin' or 'Company View User' in userData.accesses %}
+                                                    <div  class="dataTables_wrapper dt-bootstrap4">
+                                                        <div class="row">
+                                                            <div class="col-sm-12">
+                                                              {% if userData.type == 'Super Admin' or 'Company View User New' in userData.accesses %}
+                                                                    <div class="text-right"><a href="{{ path('company_user_form', { companyId: company.idEncoded, tab: 'user'} )}}">New User</a></div>
+                                                              {% endif %}
+                                                                <table id="user-datalist" class="table dataTable">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th>Username</th>
+                                                                            <th>Name</th>
+                                                                            <th>Branch</th>
+                                                                            <th>Type</th>
+                                                                            <th>Contact #</th>
+                                                                            <th>Action</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody></tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div> 
+                                                    </div>
+                                                {% else %}
+                                                    You don't have an access to view this data.
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane" id="user-access">
+                                    <div class="col-12">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                {% include 'flash_message.html.twig' %}
+                                                {% if userData.type == 'Super Admin' or 'Company View Access' in userData.accesses %}
+                                                    <div  class="dataTables_wrapper dt-bootstrap4">
+                                                        <div class="row">
+                                                            <div class="col-sm-12">
+                                                            
+                                                                <table id="user-datalist" class="table dataTable">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th>User Type</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        {% for userType in userTypes %}
+                                                                            <tr>
+                                                                                <td><a href="{{ path('company_access_form', { userType : userType['value'], companyId: company.idEncoded})}}" class="btn btn-primary">{{ userType['description'] }}</a></td>
+                                                                            </tr>
+                                                                        {% endfor %}
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div> 
+                                                    </div>
+                                                {% else %}
+                                                    You don' have an access to view this data.    
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane" id="branches">
+                                    <div class="col-12">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                {% include 'flash_message.html.twig' %}
+                                                 {% if userData.type == 'Super Admin' or 'Company View Branch' in userData.accesses %}
+                                                    <div  class="dataTables_wrapper dt-bootstrap4">
+                                                        <div class="row">
+                                                            <div class="col-sm-12">
+                                                                {% if userData.type == 'Super Admin' or 'Company View Branch' in userData.accesses %}
+                                                                    <div class="text-right"><a href="{{ path('company_branch_form', { companyId: company.idEncoded, tab: 'branch'} )}}">New Branch</a></div>
+                                                                {% endif %}
+                                                                <table id="branch-datalist" class="table dataTable" width="100%">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th>Code</th>
+                                                                            <th>Description</th>
+                                                                            <th>Action</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody></tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div> 
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                 <div class="tab-pane" id="sms">
+                                    <div class="col-12">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                {% include 'flash_message.html.twig' %}
+                                                {% if userData.type == 'Super Admin' or 'Company View Sms' in userData.accesses %}
+                                                    <div  class="dataTables_wrapper dt-bootstrap4">
+                                                        <div class="row">
+                                                            <div class="col-sm-12">
+                                                                {% if userData.type == 'Super Admin' or 'Company View Sms' in userData.accesses %}
+                                                                    <div class="text-right"><a href="{{ path('company_sms_form', { companyId: company.idEncoded, tab: 'sms'} )}}">New Sms</a></div>
+                                                                {% endif %}
+                                                                <table id="sms-datalist" class="table dataTable" width="100%">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th>Type</th>
+                                                                            <th>Message</th>
+                                                                            <th>Action</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody></tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div> 
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    {% include 'js.html.twig' %}
+
+    <script language="javascript">
+        //<![CDATA[
+        $(document).ready(function(){
+            company_details.settings.userAjaxUrl = '{{ path('user_ajax_list') }}';
+            company_details.settings.branchAjaxUrl = '{{ path('branch_ajax_list') }}';
+            company_details.settings.smsAjaxUrl = '{{ path('sms_ajax_list') }}';
+            company_details.settings.id =  '{{ company.idencoded }}';
+            company_details.init();
+        });
+        //]]>
+    </script>
+{% endblock %}

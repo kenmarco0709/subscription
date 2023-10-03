@@ -1,0 +1,97 @@
+{% set userData = app.session.get('userData') %} 
+
+<div class="modal-header">
+    <h5 class="modal-title" id="exampleModalLabel">{{ page_title }}</h5>
+</div>
+<div class="modal-body">
+    <div class="card card-primary">
+         <div class="alert alert-danger errors d-none" role="alert" >
+       
+        </div>
+        <div class="alert alert-success success d-none" role="alert" >
+       
+        </div>
+        <div class="card-header">
+            <div>Account Name: {{ clientAccount.client.fullname}}</div>
+            <div>Account Serial #: {{ clientAccount.description}}</div>
+        </div>
+        <div class="card-body">
+            <form id="clientForm">
+   
+                <div class="form-group">
+                    {{ form_label(form.billingDate) }}
+                    {{ form_widget(form.billingDate) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.dueDate) }}
+                    {{ form_widget(form.dueDate) }}
+                </div>
+                <div class="card-footer text-right">
+                    <button type="button" class="btn btn-secondary close-modal" data-bs-dismiss="modal">Close</button>
+                    {% if action == 'u' and (userData.type == 'Super Admin' or 'Client Details Account Details Billing Delete' in userData.accesses) %}
+                        <button type="submit" class="ask-continue btn  btn-danger" name="action" value="d"
+                                data-message="Are you sure you want to delete this record?">Delete</button>
+                    {% endif %}
+                   <button type="submit" class="btn just-continue btn-primary" name="action" value="{{ action }}" data-message="Are you sure you want to save this information?">Submit</button>
+                </div>
+
+                {{ form_widget(form.clientAccount) }}
+                {{ form_widget(form.action) }}
+                {{ form_widget(form.id) }}
+                {{ form_widget(form._token) }}
+
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    
+    var clientAccountBillingFormActionUrl = "{{ path('client_account_billing_ajax_form_process')}}";
+    global.init();
+
+
+    $('.close-modal').unbind('click').bind('click',function(){
+        $('.modal').modal('hide');
+    });
+
+    $('#clientForm').submit(function(e){
+
+        e.preventDefault();
+        _this = $(this);
+        _this.find(':input[type=submit]').prop('disabled', true);
+        var formData = $(this).serialize();
+        $.ajax({
+            url: clientAccountBillingFormActionUrl,
+            data: formData, 
+            type: "post",
+            dataType: "JSON",
+            success: function(r){
+                if(r.success){
+
+                    $.toaster({ message : r.msg, title : '', priority : 'success' });
+ 
+
+                    if(typeof client_account_details  != 'undefined'){
+                        client_account_details.accountDataList.draw();
+                        client_account_details.paymentDataList.draw();
+                        client_account_details.initDetails();
+                    }
+
+                    if(typeof billing != 'undefined'){
+                        billing.accountDataList.draw();
+                    }
+
+                     
+                    $('.modal').modal('hide');
+
+                } else {
+                    $.toaster({ message : r.msg, title : '', priority : 'danger' });
+                    _this.find(':input[type=submit]').prop('disabled', false);
+
+                }
+            }
+        });
+    });
+</script>

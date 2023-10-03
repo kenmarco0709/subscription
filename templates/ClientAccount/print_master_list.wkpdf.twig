@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en" dir="ltr">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="x-ua-compatible" content="ie=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Calibri:400,700,400italic,700italic">
+	
+	<style>
+
+        table thead tr td{
+			font-family: 'Calibri'!important;
+			font-size: 25px!important;
+			border: 2px solid #000;
+			padding:5px;
+			margin:0px!important;
+			border-spacing: -10px!important;
+            font-weight: 600;
+			
+		}
+
+        table  tr td{
+			font-family: 'Calibri'!important;
+			font-size: 25px!important;
+			margin:0px!important;
+			border-spacing: -10px!important;
+			
+		}
+
+        .text-center{
+            text-align:center;
+        }
+
+        .text-right{
+            text-align:right;
+        }
+
+        .bold{
+            font-weight: 600;
+        }
+
+		table { border-collapse: collapse; }
+
+        .mt-10 {
+            margin-top:10px;
+        }
+
+        .mt-25 {
+            margin-top:25px;
+        }
+        .clear-both{
+            clear:both;
+        }
+
+        .border-t{
+            border-top: 1px solid #000000;
+        }
+
+        .border-b{
+            border-bottom: 1px solid #000000;
+        }
+
+        .border-l{
+            border-left: 1px solid #000000;
+        }
+
+        .border-r{
+            border-right: 1px solid #000000;
+        }
+
+        .p-10{
+            padding:10px;
+        }
+
+	</style>
+</head>
+<body style="font-family:Calibri;font-size:22px;">
+
+    <div style='width:100%'>
+        <div class='text-center bold'>{{ user.branch.company.description|upper}} MASTERLIST OF WATERBILLS</div>
+        <div class='text-center bold'>MONTH OF _________________ {{ 'now'|date('Y')}}</div>
+        <div class='text-center bold'>{{ purok is not null  ? purok.description|upper : ''}}</div>
+        <div class='mt-25'>
+            <table width='100%'>
+               <thead>
+                    <tr class='text-center' style='page-break-inside: avoid!important'>
+                        <td  class='border-t border-b border-l border-r'>No.</td>
+                        <td  class='border-t border-b border-l border-r'>Name</td>
+                        {% if purok is null %}
+                            <td  class='border-t border-b border-l border-r'>Purok</td>
+                        {% endif %}
+                        <td  class='border-t border-b border-l border-r'>Account No.</td>
+                        <td  class='border-t border-b border-l border-r'>Previous</td>
+                        <td  class='border-t border-b border-l border-r'>Present</td>
+                    </tr>
+               </thead>
+               <tbody>
+                    {% for k, masterList in masterLists %}
+                        <tr class='text-center' style='page-break-inside: avoid!important'>
+                            <td  class='border-t border-b border-l border-r fs-16'>{{k + 1}}</td>
+                            <td  class='border-t border-b border-l border-r fs-16'> {{ masterList['fullName']}}</td>
+                            {% if purok is null %}
+                                <td  class='border-t border-b border-l border-r fs-16'>{{ masterList['purok']}}</td>
+                            {% endif %}
+                            <td  class='border-t border-b border-l border-r fs-16'>{{ masterList['serialNo']}}</td>
+                            <td  class='border-t border-b border-l border-r fs-16'>{{ masterList['presentBilling']}}</td>
+                            <td  class='border-t border-b border-l border-r fs-16'></td>
+                        </tr>
+                    {% endfor %}
+                    
+               </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,154 @@
+{% set userData = app.session.get('userData') %} 
+
+<div class="modal-header">
+    <h5 class="modal-title" id="exampleModalLabel">{{ page_title }}</h5>
+</div>
+<div class="modal-body">
+    <div class="card card-primary">
+         <div class="alert alert-danger errors d-none" role="alert" >
+       
+        </div>
+        <div class="alert alert-success success d-none" role="alert" >
+       
+        </div>
+        <div class="card-header">
+            
+            <div>Account Name: {{ lastBilling.clientaccount.client.fullname}}</div>
+            <div>Account Serial #: {{ lastBilling.clientaccount.description}}</div>
+            <div>Balance from last billing: {{ lastBilling.clientaccount.remainingbalance}}</div>
+            <div>Bill Amount: {{ lastBilling.status == 'Paid'  ? 0 : lastBilling.billedamount  }}</div>
+            <div>Remaining Balance: </strong> {{ lastBilling.clientAccount.finalbalance }} </div>
+        </div>
+        <div class="card-body">
+            <form id="clientForm"  enctype='multipart/form-data'>
+                <div class="form-group">
+                    {{ form_label(form.transactionNo) }}
+                    {{ form_widget(form.transactionNo) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.payment_type_desc) }}
+                    {{ form_widget(form.payment_type_desc) }}
+                    {{ form_widget(form.paymentType) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.amount) }}
+                    {{ form_widget(form.amount) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.amount_tendered) }}
+                    {{ form_widget(form.amount_tendered) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.amount_change) }}
+                    {{ form_widget(form.amount_change) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.file) }}
+                    {{ form_widget(form.file) }}
+
+                </div>
+                 <div class="form-group">
+                    {{ form_label(form.refNo) }}
+                    {{ form_widget(form.refNo) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.paymentDate) }}
+                    {{ form_widget(form.paymentDate) }}
+                </div>
+                <div class="card-footer text-right">
+                    <button type="button" class="btn btn-secondary close-modal" data-bs-dismiss="modal">Close</button>
+                    {% if action == 'u' and (userData.type == 'Super Admin' or 'Client Details Account Details Payment Delete' in userData.accesses) %}
+                        <button type="submit" class="ask-continue btn  btn-danger" name="action" value="d"
+                                data-message="Are you sure you want to delete this record?">Delete</button>
+                    {% endif %}
+                   <button type="submit" class="btn just-continue btn-primary" name="action" value="{{ action }}" data-message="Are you sure you want to save this information?">Submit</button>
+                </div>
+
+                {{ form_widget(form.clientAccount) }}
+                {{ form_widget(form.action) }}
+                {{ form_widget(form.id) }}
+                {{ form_widget(form._token) }}
+
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    
+    qz.websocket.disconnect();
+
+    var clientAccountPaymentFormActionUrl = "{{ path('client_account_payment_ajax_form_process')}}";
+    var paymentTypeAutocompleteUrl = "{{ path('payment_type_autocomplete')}}";
+
+    global.init();
+    global.autocomplete.bind(paymentTypeAutocompleteUrl,'#client_account_payment_form_payment_type_desc','#client_account_payment_form_paymentType');
+
+
+
+    $('.close-modal').unbind('click').bind('click',function(){
+        $('.modal').modal('hide');
+    });
+
+    $('#clientForm').submit(function(e){
+
+        e.preventDefault();
+        _this = $(this);
+        _this.find(':input[type=submit]').prop('disabled', true);
+        // var formData = $(this).serialize();
+        var formData = new FormData(_this[0]);
+        $.ajax({
+            url: clientAccountPaymentFormActionUrl,
+            data: formData, 
+            type: "post",
+             cache: false,
+            processData: false,
+            contentType: false,
+            success: function(r){
+                if(r.success){
+
+                    $.toaster({ message : r.msg, title : '', priority : 'success' });
+
+                    if(typeof  client_account_details != 'undefined' ){
+                         client_account_details.accountDataList.draw();
+                         client_account_details.paymentDataList.draw();
+                         client_account_details.initDetails();
+                    }
+
+                    if(typeof payment  != 'undefined'){
+                        payment.paymentDataList.draw();
+
+                    }
+               
+                    $('.modal').modal('hide');
+                        qz.websocket.connect().then(function() { 
+                        return qz.printers.find("XP-58C");              // Pass the printer name into the next Promise
+                            }).then(function(printer) {
+                                var config = qz.configs.create(printer);       // Create a default config for the found printer
+                            var data = [{
+                            type: 'pixel',
+                            format: 'html',
+                            flavor: 'plain', // or 'plain' if the data is raw HTML
+                            data: r.html
+                        }];
+                        return qz.print(config, data);
+                    }).catch(function(e) { console.error(e); });
+
+                } else {
+                    $.toaster({ message : r.msg, title : '', priority : 'danger' });
+                    _this.find(':input[type=submit]').prop('disabled', false);
+
+                }
+            }
+        });
+    });
+
+    $('#client_account_payment_form_amount_tendered,#client_account_payment_form_amount').unbind('keyup').bind('keyup', function(){
+        computeChangeAmt();
+    });
+
+    function computeChangeAmt(){
+        $('#client_account_payment_form_amount_change').val($('#client_account_payment_form_amount_tendered').val() - $('#client_account_payment_form_amount').val());   
+    }
+</script>

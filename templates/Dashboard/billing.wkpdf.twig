@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en" dir="ltr">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="x-ua-compatible" content="ie=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Calibri:400,700,400italic,700italic">
+	
+	<style>
+
+        table thead tr td{
+			font-family: 'Calibri'!important;
+			font-size: 25px!important;
+			border: 2px solid #000;
+			padding:5px;
+			margin:0px!important;
+			border-spacing: -10px!important;
+            font-weight: 600;
+			
+		}
+
+        table  tr td{
+			font-family: 'Calibri'!important;
+			font-size: 25px!important;
+			margin:0px!important;
+			border-spacing: -10px!important;
+			
+		}
+
+        .text-center{
+            text-align:center;
+        }
+
+        .text-right{
+            text-align:right;
+        }
+
+        .bold{
+            font-weight: 600;
+        }
+
+		table { border-collapse: collapse; }
+
+        .mt-10 {
+            margin-top:10px;
+        }
+
+        .mt-25 {
+            margin-top:25px;
+        }
+        .clear-both{
+            clear:both;
+        }
+
+        .border-t{
+            border-top: 1px solid #000000;
+        }
+
+        .border-b{
+            border-bottom: 1px solid #000000;
+        }
+
+        .border-l{
+            border-left: 1px solid #000000;
+        }
+
+        .border-r{
+            border-right: 1px solid #000000;
+        }
+
+
+        .p-10{
+            padding:10px;
+        }
+	</style>
+</head>
+<body style="font-family:Calibri;font-size:18px!important;height:11in!important;">
+
+    {% for accountBillingWithPendingPayment in accountBillingWithPendingPayments %}
+       {% if loop.index is odd  %}
+            <div style='width:100%;height:48%;margin-top:505px!important;'>
+                <div style="width:47%;float:left;"> 
+                    <div class='text-center'>{{ accountBillingWithPendingPayment['company']}}</div>
+                    <div class='text-center'>{{ accountBillingWithPendingPayment['companyAddress']}}</div>
+                    <div class='text-center'>Lipa City</div>
+                    <div class='text-center mt-10'>TEMPORARY RECEIPT</div>
+                    <div class='mt-25'>
+                        <div style="width:70px;float:left;">Name: </div>
+                        <div style="border-bottom:1px solid #000000;float:left;width:50%;">{{ accountBillingWithPendingPayment['fullName'] }}</div>
+                        <div class='clear-both'></div>
+                        <div style="width:70px;float:left;">Date: </div>
+                        <div style="border-bottom:1px solid #000000;float:left;width:50%;">{{ "now"|date("m/d/Y") }}</div>
+                        <div class='clear-both'></div>
+                    </div>
+                    <div class='mt-25 border-t border-b border-l border-r p-10'>
+                        <div style="width:170px;float:left;">Present Billing: </div>
+                        <div style="border-bottom:1px solid #000000;float:left;width:50%;">{{ accountBillingWithPendingPayment['presentBilling'] }}</div>
+                        <div class='clear-both'></div>
+                        <div style="width:170px;float:left;">Previous Billing: </div>
+                        <div style="border-bottom:1px solid #000000;float:left;width:50%;">{{ accountBillingWithPendingPayment['previousBilling'] }}</div>
+                        <div class='clear-both'></div>
+                    </div>  
+                    {% set excess = 0 %}
+                    {% if accountBillingWithPendingPayment['consume'] >  maximumConsumeBeforeMinimum.branchvariablevalue  %}
+                        {% set excess = accountBillingWithPendingPayment['consume'] - maximumConsumeBeforeMinimum.branchvariablevalue %}
+                    {% endif %}
+                    <div class='border-b border-l border-r p-10'>
+                        <div style="width:170px;float:left;">Amount </div>
+                        <div style="float:left;width:20%;" class='text-center'> Minimum {{ maximumConsumeBeforeMinimum.branchvariablevalue }}/</div>
+                        <div style="border-bottom:1px solid #000000;float:right;width:30%;" class='text-right'>  {{ minimumBilledAmount.branchvariablevalue }}</div>
+                        <div class='clear-both'></div>
+                        <div style="width:170px;float:left;">Excess </div>
+                        <div style="float:left;width:30%;" class='text-right'> {{ excess }} X {{ accountBillingWithPendingPayment['amountPerCubic'] }} = </div>
+                        <div style="border-bottom:1px solid #000000;float:right;width:30%;" class='text-right'>  {{ excess * accountBillingWithPendingPayment['amountPerCubic'] }}</div>
+                        <div class='clear-both'></div>
+                        <div style="width:170px;float:left;">Total </div>
+                        <div style="float:left;width:30%;" class='text-right'> &nbsp;</div>
+                        <div style="border-bottom:1px solid #000000;float:right;width:30%;" class='text-right'>  {{ accountBillingWithPendingPayment['billedAmount']  }}</div>
+                        <div class='clear-both'></div>
+                        <div class='mt-25'>
+                        <div style="width:170px;float:left;">&nbsp; </div>
+                            <div style="float:left;width:35%;" class='text-right'> Balance from previous bill</div>
+                            <div style="border-bottom:1px solid #000000;float:right;width:30%;" class='text-right'>  {{ accountBillingWithPendingPayment['remainingBalance']  }}</div>
+                            <div class='clear-both'></div>
+                            <div style="width:170px;float:left;">&nbsp; </div>
+                            <div style="float:left;width:35%;" class='text-right'> Grand Total</div>
+                            <div style="float:right;width:30%;" class='text-right'>  {{ accountBillingWithPendingPayment['remainingBalance'] + accountBillingWithPendingPayment['billedAmount']  }}</div>
+                            <div class='clear-both'></div>
+                        </div>
+                        <div class='mt-25'>
+                        <div style="width:170px;float:left;">&nbsp; </div>
+                            <div style="float:left;width:35%;" class='text-right'> Due Date</div>
+                            <div style="border-bottom:1px solid #000000;float:right;width:30%;" class='text-center'>{{ accountBillingWithPendingPayment['dueDate']  }} </div>
+                            <div class='clear-both'></div>
+                        </div>
+
+                        <div class='mt-25'>
+                        <div>Note: Please pay your bill before duedate <u> {{ accountBillingWithPendingPayment['dueDate']}}</u> at the Brgy. Hall Water Service to avoid disconnection</div>
+                        </div>
+                        <div class='mt-25'>
+                        <div>No Water Collector</div>
+                        </div>
+                    </div>
+                    {% if accountBillingWithPendingPayment['remainingBalance'] > 0%}
+                        <div class='mt-25'>
+                        <div class='text-center'>Babala</div>
+                        <div class='mt-10'><span style='padding-left:10px;'>Sang ayon</span> sa aming talaan, Kayo Ginoo / Ginang / Binibini <u>{{ accountBillingWithPendingPayment['fullName'] }}</u> ay may pagkakautang ng halagang Php <u>
+                          {{ accountBillingWithPendingPayment['remainingBalance'] + accountBillingWithPendingPayment['billedAmount']  }}</u> mula sa petsa <u>{{accountBillingWithPendingPayment['firstPendingPayment']}}</u> hanggang sa kasalukuyan sa  {{ accountBillingWithPendingPayment['company']}}. 
+                            Mangyari lamang po na tingnan ang inyong talaan at alamin kung tama ang aming ulat.Kung wla po kayong katunayan ay mangyari lamang na magsadya sa tangapan ng {{ accountBillingWithPendingPayment['company']}} sa ating {{ accountBillingWithPendingPayment['companyAddress']}} Plaza upang bayaran ang nasabing halagang Php <u>
+                           {{ accountBillingWithPendingPayment['remainingBalance'] + accountBillingWithPendingPayment['billedAmount']  }}</u>. Sa sandaling hindi nmin matangap ang inyong kaukulang bayad bago ang petsa <u>{{ accountBillingWithPendingPayment['dueDate']  }}</u> ay mapipilitan kaming putulan kayo ng serbisyo ng tubig bago ang petsa <u>{{ accountBillingWithPendingPayment['dueDate']  }}</u>
+                        </div>
+                        <div class='mt-10'>Inaasahan po nmin ang inyung pakikiisa. Maraming Salamant Po.</div>
+                        <div class='mt-10'>Gumagalang</div>
+                        <div class='mt-10'>
+                            <div style='float:right'>
+                                <div class='border-b text-center'>Hon.Mylene  M. Coronel</div>
+                                <div class='text-center'>Brgy. Captain</div>
+                            </div>
+                        </div>
+                        </div>
+                    {% endif %}
+                </div>
+                
+       {% else %}
+            
+                <div style="width:47%;float:right;">
+                     
+                    <div class='text-center'>{{ accountBillingWithPendingPayment['company']}}</div>
+                    <div class='text-center'>{{ accountBillingWithPendingPayment['companyAddress']}}</div>
+                    <div class='text-center'>Lipa City</div>
+                    <div class='text-center mt-10'>TEMPORARY RECEIPT</div>
+                    <div class='mt-25'>
+                        <div style="width:70px;float:left;">Name: </div>
+                        <div style="border-bottom:1px solid #000000;float:left;width:50%;">{{ accountBillingWithPendingPayment['fullName'] }}</div>
+                        <div class='clear-both'></div>
+                        <div style="width:70px;float:left;">Date: </div>
+                        <div style="border-bottom:1px solid #000000;float:left;width:50%;">{{ "now"|date("m/d/Y") }}</div>
+                        <div class='clear-both'></div>
+                    </div>
+                    <div class='mt-25 border-t border-b border-l border-r p-10'>
+                        <div style="width:170px;float:left;">Present Billing: </div>
+                        <div style="border-bottom:1px solid #000000;float:left;width:50%;">{{ accountBillingWithPendingPayment['presentBilling'] }}</div>
+                        <div class='clear-both'></div>
+                        <div style="width:170px;float:left;">Previous Billing: </div>
+                        <div style="border-bottom:1px solid #000000;float:left;width:50%;">{{ accountBillingWithPendingPayment['previousBilling'] }}</div>
+                        <div class='clear-both'></div>
+                    </div>  
+                    {% set excess = 0 %}
+
+                    {% if accountBillingWithPendingPayment['consume'] >  maximumConsumeBeforeMinimum.branchvariablevalue  %}
+                        {% set excess = accountBillingWithPendingPayment['consume'] - maximumConsumeBeforeMinimum.branchvariablevalue %}
+                    {% endif %}
+                    <div class='border-b border-l border-r p-10'>
+                        <div style="width:170px;float:left;">Amount </div>
+                        <div style="float:left;width:20%;" class='text-center'> Minimum {{ maximumConsumeBeforeMinimum.branchvariablevalue }}/</div>
+                        <div style="border-bottom:1px solid #000000;float:right;width:30%;" class='text-right'>  {{ minimumBilledAmount.branchvariablevalue }}</div>
+                        <div class='clear-both'></div>
+                        <div style="width:170px;float:left;">Excess </div>
+                        <div style="float:left;width:30%;" class='text-right'> {{ excess }} X {{ accountBillingWithPendingPayment['amountPerCubic'] }} = </div>
+                        <div style="border-bottom:1px solid #000000;float:right;width:30%;" class='text-right'>  {{ excess * accountBillingWithPendingPayment['amountPerCubic'] }}</div>
+                        <div class='clear-both'></div>
+                        <div style="width:170px;float:left;">Total </div>
+                        <div style="float:left;width:30%;" class='text-right'> &nbsp;</div>
+                        <div style="border-bottom:1px solid #000000;float:right;width:30%;" class='text-right'>  {{ accountBillingWithPendingPayment['billedAmount']  }}</div>
+                        <div class='clear-both'></div>
+                        <div class='mt-25'>
+                        <div style="width:170px;float:left;">&nbsp; </div>
+                            <div style="float:left;width:35%;" class='text-right'> Balance from previous bill</div>
+                            <div style="border-bottom:1px solid #000000;float:right;width:30%;" class='text-right'>  {{ accountBillingWithPendingPayment['remainingBalance']  }}</div>
+                            <div class='clear-both'></div>
+                            <div style="width:170px;float:left;">&nbsp; </div>
+                            <div style="float:left;width:35%;" class='text-right'> Grand Total</div>
+                            <div style="float:right;width:30%;" class='text-right'>  {{ accountBillingWithPendingPayment['remainingBalance'] + accountBillingWithPendingPayment['billedAmount']  }}</div>
+                            <div class='clear-both'></div>
+                        </div>
+                        <div class='mt-25'>
+                        <div style="width:170px;float:left;">&nbsp; </div>
+                            <div style="float:left;width:35%;" class='text-right'> Due Date</div>
+                            <div style="border-bottom:1px solid #000000;float:right;width:30%;" class='text-center'>{{ accountBillingWithPendingPayment['dueDate']  }} </div>
+                            <div class='clear-both'></div>
+                        </div>
+
+                        <div class='mt-25'>
+                        <div>Note: Please pay your bill before duedate <u> {{ accountBillingWithPendingPayment['dueDate']}}</u> at the Brgy. Hall Water Service to avoid disconnection</div>
+                        </div>
+                        <div class='mt-25'>
+                        <div>No Water Collector</div>
+                        </div>
+                    </div>
+                    {% if accountBillingWithPendingPayment['remainingBalance'] > 0%}
+                        <div class='mt-25'>
+                        <div class='text-center'>Babala</div>
+                        <div class='mt-10'><span style='padding-left:10px;'>Sang ayon</span> sa aming talaan, Kayo Ginoo / Ginang / Binibini <u>{{ accountBillingWithPendingPayment['fullName'] }}</u> ay may pagkakautang ng halagang Php <u>
+                          {{ accountBillingWithPendingPayment['remainingBalance'] + accountBillingWithPendingPayment['billedAmount']  }}</u> mula sa petsa <u>{{accountBillingWithPendingPayment['firstPendingPayment']}}</u> hanggang sa kasalukuyan sa  {{ accountBillingWithPendingPayment['company']}}. 
+                            Mangyari lamang po na tingnan ang inyong talaan at alamin kung tama ang aming ulat.Kung wla po kayong katunayan ay mangyari lamang na magsadya sa tangapan ng {{ accountBillingWithPendingPayment['company']}} sa ating {{ accountBillingWithPendingPayment['companyAddress']}} Plaza upang bayaran ang nasabing halagang Php <u>
+                           {{ accountBillingWithPendingPayment['remainingBalance'] + accountBillingWithPendingPayment['billedAmount']  }}</u>. Sa sandaling hindi nmin matangap ang inyong kaukulang bayad bago ang petsa <u>{{ accountBillingWithPendingPayment['dueDate']  }}</u> ay mapipilitan kaming putulan kayo ng serbisyo ng tubig bago ang petsa <u>{{ accountBillingWithPendingPayment['dueDate']  }}</u>
+                        </div>
+                        <div class='mt-10'>Inaasahan po nmin ang inyung pakikiisa. Maraming Salamant Po.</div>
+                        <div class='mt-10'>Gumagalang</div>
+                        <div class='mt-10'>
+                            <div style='float:right'>
+                                <div class='border-b text-center'>Hon.Mylene  M. Coronel</div>
+                                <div class='text-center'>Brgy. Captain</div>
+                            </div>
+                        </div>
+                        </div>
+                    {% endif %}
+                
+                </div>
+            </div>  
+       {% endif %}
+
+       {% if loop.last is odd %}
+            </div>
+       {% endif %}
+
+    {% endfor %}
+</body>
+</html>
